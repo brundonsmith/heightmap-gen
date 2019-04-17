@@ -1,6 +1,6 @@
 (ns heightmap-gen.filters
-  (:require [heightmap-gen.math :as math])
-  (:require [heightmap-gen.maps :as maps]))
+  (:require [heightmap-gen.utils.math :as math])
+  (:require [heightmap-gen.utils.maps :as maps]))
 
 (defn average-maps [maps]
   (maps/map-maps math/average maps))

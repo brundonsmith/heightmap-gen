@@ -1,4 +1,4 @@
-(ns heightmap-gen.math)
+(ns heightmap-gen.utils.math)
 
 (defn average [& nums]
   (/ (reduce + nums) (count nums)))

@@ -1,4 +1,4 @@
-(ns heightmap-gen.maps)
+(ns heightmap-gen.utils.maps)
 
 ; image data
 (defn new-vec

@@ -1,5 +1,5 @@
 (ns heightmap-gen.basic-generators
-  (:require [heightmap-gen.maps :as maps]))
+  (:require [heightmap-gen.utils.maps :as maps]))
 
 (defn flat-map [size val]
   (maps/new-map size (constantly val)))

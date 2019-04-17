@@ -1,7 +1,7 @@
 (ns heightmap-gen.diamond-square
-  (:require [heightmap-gen.math :as math])
-  (:require [heightmap-gen.maps :as maps])
-  (:require [heightmap-gen.utils :as utils])
+  (:require [heightmap-gen.utils.math :as math])
+  (:require [heightmap-gen.utils.maps :as maps])
+  (:require [heightmap-gen.utils.misc :as misc])
   (:require [heightmap-gen.basic-generators :as basic-generators]))
 
 (defn- get-trios [x1 y1 x2 y2]
@@ -19,7 +19,7 @@
           [[0 2] [0 0] [1 1]]]))
 
 (defn- mid-num [nums]
-  (let [repeated-nums (into '() (into #{} (filter (fn [num] (not (utils/unique [0 0 1] num))) [0 0 1])))]
+  (let [repeated-nums (into '() (into #{} (filter (fn [num] (not (misc/unique [0 0 1] num))) [0 0 1])))]
     (cond
       (= (count repeated-nums) 1) (first repeated-nums)
       :else (apply math/average nums))))
@@ -44,7 +44,7 @@
 
 (defn- apply-trios [the-map x1 y1 x2 y2 rand-i]
   (let [point-trios (get-trios x1 y1 x2 y2)]
-    (utils/pipe
+    (misc/pipe
      (map (fn [trio] (fn [piped-map] (set-midpoint piped-map trio rand-i))) point-trios)
      the-map)))
 
@@ -69,14 +69,14 @@
   (cond
     (or (= x1 x2) (= y1 y2) (= x1 (- x2 1)) (= y1 (- y2 1))) the-map
     :else (square-step
-           (set-midpoint the-map (utils/pairs [x1 x2] [y1 y2]) rand-i)
+           (set-midpoint the-map (misc/pairs [x1 x2] [y1 y2]) rand-i)
            x1 y1 x2 y2
            (* rand-i rand-s)
            rand-s)))
 
 (defn- square-step [the-map x1 y1 x2 y2 rand-i rand-s]
   (let [modified (apply-trios the-map x1 y1 x2 y2 rand-i)]
-    (utils/pipe
+    (misc/pipe
      (map
       (fn [quadrant]
         (fn [piped-map]

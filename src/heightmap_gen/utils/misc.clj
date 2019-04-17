@@ -1,4 +1,4 @@
-(ns heightmap-gen.utils)
+(ns heightmap-gen.utils.misc)
 
 (defn pipe [funcs val]
   (cond
