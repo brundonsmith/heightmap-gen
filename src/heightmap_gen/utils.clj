@@ -19,3 +19,12 @@
 
 (defn unique [vec val]
   (< (occurances vec val) 2))
+
+(defn pairs [group1 group2]
+  (for [a group1
+        b group2]
+    [a b]))
+
+(assert (=
+         (pairs [0 1] [2 3])
+         [[0 2] [0 3] [1 2] [1 3]]))
