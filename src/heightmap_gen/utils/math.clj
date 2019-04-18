@@ -39,10 +39,23 @@
     (>= n max) max
     :else n))
 
+(assert (=
+         (clamp -1 0 1)
+         0))
+
+(assert (=
+         (clamp 2 0 1)
+         1))
+
+(assert (=
+         (clamp 0.1 0 1)
+         0.1))
+
 (defn is-integer [flt]
   (=
    (Math/round (Math/ceil flt))
    (Math/round (Math/floor flt))))
 
-(defn random-offset [radius]
-  (* (* (- (rand) 0.5) radius) 2))
+(defn random-offset [range]
+  (* (- (rand) 0.5) range))
+

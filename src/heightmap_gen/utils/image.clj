@@ -14,10 +14,9 @@
             y (range size)]
       (let [val (maps/get-at height-map x y)]
         (.setColor gfx (Color.
-                        (math/clamp (float val) 0 1)
-                        (math/clamp (float val) 0 1)
-                        (math/clamp (float val) 0 1)))
+                        (float (math/clamp val 0 1))
+                        (float (math/clamp val 0 1))
+                        (float (math/clamp val 0 1))))
         (.fillRect gfx x y 1 1)))
 
     (ImageIO/write img "png" (File. "test.png"))))
-

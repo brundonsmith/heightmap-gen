@@ -4,22 +4,19 @@
   (:require [heightmap-gen.utils.misc :as misc])
   (:require [heightmap-gen.basic-generators :as basic-generators]))
 
-(defn- get-trios [x1 y1 x2 y2]
-  (let [mid [(math/average x1 x2) (math/average y1 y2)]]
-    [[[x1 y1] [x2 y1] mid]
-     [[x2 y1] [x2 y2] mid]
-     [[x2 y2] [x1 y2] mid]
-     [[x1 y2] [x1 y1] mid]]))
 
-(assert (=
-         (get-trios 0 0 2 2)
-         [[[0 0] [2 0] [1 1]]
-          [[2 0] [2 2] [1 1]]
-          [[2 2] [0 2] [1 1]]
-          [[0 2] [0 0] [1 1]]]))
+(defn- init-corners [the-map]
+  (let [size (count the-map)]
+    (-> the-map
+        (maps/set-at 0 0                   (* (rand) 0.5))
+        (maps/set-at 0 (- size 1)          (* (rand) 0.5))
+        (maps/set-at (- size 1) 0          (* (rand) 0.5))
+        (maps/set-at (- size 1) (- size 1) (* (rand) 0.5)))))
+
+
 
 (defn- mid-num [nums]
-  (let [repeated-nums (into '() (into #{} (filter (fn [num] (not (misc/unique [0 0 1] num))) [0 0 1])))]
+  (let [repeated-nums (into '() (into #{} (filter (fn [num] (not (misc/unique nums num))) nums)))]
     (cond
       (= (count repeated-nums) 1) (first repeated-nums)
       :else (apply math/average nums))))
@@ -29,24 +26,30 @@
         all-y (map second points)
         mid-x (mid-num all-x)
         mid-y (mid-num all-y)
-        midval (apply math/average (map #(maps/get-at the-map (first %) (second %)) points))]
-    (maps/set-at the-map mid-x mid-y (+ midval (math/random-offset rand-i)))))
+        point-vals (map #(maps/get-at the-map (first %) (second %)) points)
+        avg (apply math/average point-vals)
+        offset (math/random-offset rand-i)]
+    ;(println points point-vals)
+    (maps/set-at the-map mid-x mid-y (+ avg offset))))
 
-(assert (=
-         (set-midpoint [[0 0 1]
-                        [0 0 0]
-                        [1 0 2]]
-                       [[0 0] [2 0] [2 2] [0 2]]
-                       0))
-        [[0 0 1]
-         [0 1 0]
-         [1 0 2]])
 
-(defn- apply-trios [the-map x1 y1 x2 y2 rand-i]
-  (let [point-trios (get-trios x1 y1 x2 y2)]
+
+(defn- get-diamonds [x1 y1 x2 y2]
+  (let [mid-x (math/average x1 x2)
+        mid-y (math/average y1 y2)
+        radius (- x2 x1)]
+    [[[mid-x mid-y] [x1 y1] [x2 y1] [mid-x (- mid-y radius)]]
+     [[mid-x mid-y] [x2 y1] [x2 y2] [(+ mid-x radius) mid-y]]
+     [[mid-x mid-y] [x2 y2] [x1 y2] [mid-x (+ mid-y radius)]]
+     [[mid-x mid-y] [x1 y2] [x1 y1] [(- mid-x radius) mid-y]]]))
+
+(defn- apply-diamonds [the-map x1 y1 x2 y2 rand-i]
+  (let [point-diamonds (get-diamonds x1 y1 x2 y2)]
     (misc/pipe
-     (map (fn [trio] (fn [piped-map] (set-midpoint piped-map trio rand-i))) point-trios)
+     (map (fn [diamond] (fn [piped-map] (set-midpoint piped-map diamond rand-i))) point-diamonds)
      the-map)))
+
+
 
 (defn- get-quadrants [x1 y1 x2 y2]
   (let [mid-x (math/average x1 x2)
@@ -56,16 +59,13 @@
      [x1 mid-y mid-x y2]
      [mid-x mid-y x2 y2]]))
 
-(assert (=
-         (get-quadrants 0 0 2 2)
-         [[0 0 1 1]
-          [1 0 2 1]
-          [0 1 1 2]
-          [1 1 2 2]]))
 
+
+; steps
 (declare square-step)
 
 (defn- diamond-step [the-map x1 y1 x2 y2 rand-i rand-s]
+  ;(println (set-midpoint the-map (misc/pairs [x1 x2] [y1 y2]) rand-i))
   (cond
     (or (= x1 x2) (= y1 y2) (= x1 (- x2 1)) (= y1 (- y2 1))) the-map
     :else (square-step
@@ -75,7 +75,8 @@
            rand-s)))
 
 (defn- square-step [the-map x1 y1 x2 y2 rand-i rand-s]
-  (let [modified (apply-trios the-map x1 y1 x2 y2 rand-i)]
+  ;(println the-map)
+  (let [modified (apply-diamonds the-map x1 y1 x2 y2 rand-i)]
     (misc/pipe
      (map
       (fn [quadrant]
@@ -86,11 +87,43 @@
            (nth quadrant 1)
            (nth quadrant 2)
            (nth quadrant 3)
-           rand-i rand-s)))
+           rand-i
+           rand-s)))
       (get-quadrants x1 y1 x2 y2))
-     the-map)))
+     modified)))
 
-
+; main function
 (defn diamond-square-map [size rand-i rand-s]
   ;(assert (is-integer (Math/sqrt (- size 1))))
-  (diamond-step (basic-generators/white-noise-map size) 0 0 (- size 1) (- size 1) rand-i rand-s))
+  (let [the-map (basic-generators/flat-map size 0.5)]
+    (diamond-step the-map 0 0 (- size 1) (- size 1) rand-i rand-s)))
+
+(comment
+(assert (=
+         (get-diamonds 0 0 2 2)
+         [[[1 1] [0 0] [2 0] [1 -1]]
+          [[1 1] [2 0] [2 2] [3 1]]
+          [[1 1] [2 2] [0 2] [1 3]]
+          [[1 1] [0 2] [0 0] [-1 1]]]))
+
+(assert (=
+         (set-midpoint [[0.5 0 0 0  0.5]
+                        [0   0 0 0  0]
+                        [0   0 0 0  0]
+                        [0   0 0 0  0]
+                        [0.5 0 0 0  0.5]]
+                       (misc/pairs [0 4] [0 4])
+                       0))
+        [[0.5 0 0 0  0.5]
+         [0   0 0 0  0]
+         [0   0 0.5 0  0]
+         [0   0 0 0  0]
+         [0.5 0 0 0  0.5]])
+
+(assert (=
+         (get-quadrants 0 0 2 2)
+         [[0 0 1 1]
+          [1 0 2 1]
+          [0 1 1 2]
+          [1 1 2 2]]))
+)

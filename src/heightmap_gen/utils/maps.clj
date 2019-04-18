@@ -13,7 +13,10 @@
   ([size func] (new-vec size (fn [x] (new-vec size (fn [y] (func x y)))))))
 
 (defn get-at [the-map x y]
-  (get (get the-map x) y))
+  (let [size (count the-map)
+        x-index (mod (+ x size) size)
+        y-index (mod (+ y size) size)]
+    (get (get the-map x-index) y-index)))
 
 (defn set-at [the-map x y val]
   (assoc the-map x (assoc (get the-map x) y val)))
@@ -24,4 +27,3 @@
              (fn [x y]
                (let [vals (map #(get-at % x y) maps)]
                  (apply func vals))))))
-
