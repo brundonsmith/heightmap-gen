@@ -7,7 +7,7 @@
 
 
 (defn- init-corners [the-map]
-  (let [size (count the-map)]
+  (let [size (maps/map-size the-map)]
     (-> the-map
         (maps/set-at 0 0                   (* (rand) 0.5))
         (maps/set-at 0 (- size 1)          (* (rand) 0.5))
@@ -63,7 +63,7 @@
 
 ; steps
 (defn- each-partition [the-map partitions func]
-  (let [size (count the-map)]
+  (let [size (maps/map-size the-map)]
     (misc/pipe the-map
                (map 
                 (fn [partition] (fn [piped-map] 
@@ -84,7 +84,7 @@
 
 (defn step [the-map partitions rand-i rand-s]
   (println "------------------ step ------------------")
-  (let [size (count the-map)]
+  (let [size (maps/map-size the-map)]
     (cond
       (>= partitions (- size 1)) the-map
       :else                      (-> the-map

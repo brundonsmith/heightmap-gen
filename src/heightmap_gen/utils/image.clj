@@ -5,14 +5,14 @@
 
 (import 'java.awt.image.BufferedImage 'javax.imageio.ImageIO 'java.awt.Color 'java.io.File)
 
-(defn write-image [height-map]
-  (let [size (count height-map)
+(defn write-image [the-map]
+  (let [size (maps/map-size the-map)
         img (BufferedImage. size size BufferedImage/TYPE_BYTE_GRAY)
         gfx (.getGraphics img)]
 
     (doseq [x (range size)
             y (range size)]
-      (let [val (maps/get-at height-map x y)]
+      (let [val (maps/get-at the-map x y)]
         (.setColor gfx (Color.
                         (float (math/clamp val 0 1))
                         (float (math/clamp val 0 1))
