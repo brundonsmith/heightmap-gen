@@ -5,4 +5,4 @@
 
 ;; testing
 (defn -main []
-  (image/write-image (diamond-square/diamond-square-map 257 0.5 0.9)))
+  (image/write-image (diamond-square/diamond-square-map 129 0.5 0.5)))

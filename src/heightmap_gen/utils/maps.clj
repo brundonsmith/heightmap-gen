@@ -1,4 +1,5 @@
-(ns heightmap-gen.utils.maps)
+(ns heightmap-gen.utils.maps
+  (:require [clojure.tools.trace :as tr]))
 
 ; image data
 (defn new-vec
@@ -19,6 +20,7 @@
     (get (get the-map x-index) y-index)))
 
 (defn set-at [the-map x y val]
+  (assert (and (>= x 0) (>= y 0) (< x (count the-map)) (< y (count the-map))) "Tried to set value with X and Y that are outside the map")
   (assoc the-map x (assoc (get the-map x) y val)))
 
 (defn map-maps [func maps]

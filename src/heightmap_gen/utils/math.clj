@@ -59,3 +59,8 @@
 (defn random-offset [range]
   (* (- (rand) 0.5) range))
 
+(defn round-up [n]
+  (Math/round (Math/ceil n)))
+
+(defn round-down [n]
+  (Math/round (Math/floor n)))
