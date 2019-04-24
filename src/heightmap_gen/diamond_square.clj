@@ -56,18 +56,20 @@
   (let [partition-size (/ size partitions)]
     (for [x1 (range 0 size partition-size)
           y1 (range 0 size partition-size)]
-      (let [x2 (+ x1 (* partition-size 0.999))
-            y2 (+ y1 (* partition-size 0.999))]
-        [(math/round-down x1) (math/round-down y1) (math/round-down x2) (math/round-down y2)]))))
+        [(math/round-down x1) 
+         (math/round-down y1) 
+         (math/round-down (+ x1 (* partition-size 0.999)))
+         (math/round-down (+ y1 (* partition-size 0.999)))])))
 
 
 ; steps
 (defn- each-partition [the-map partitions func]
   (let [size (maps/map-size the-map)]
     (misc/pipe the-map
-               (map 
-                (fn [partition] (fn [piped-map] 
-                                  (func piped-map (nth partition 0) (nth partition 1) (nth partition 2) (nth partition 3))))
+               (map
+                (fn [partition] 
+                  (fn [piped-map]
+                    (func piped-map (nth partition 0) (nth partition 1) (nth partition 2) (nth partition 3))))
                 (get-partitions size partitions)))))
 
 

@@ -6,17 +6,18 @@
 (defn map-size [the-map]
   (Math/round (math/binary-root (count the-map) 2)))
 
+(defn wraparound [num size]
+  (mod (+ num size) size))
+
 (defn get-at [the-map x y]
   (let [size (map-size the-map)
-        x-index (mod (+ x size) size)
-        y-index (mod (+ y size) size)]
+        x-index (wraparound x size)
+        y-index (wraparound y size)]
     (get the-map (+ x-index (* y-index size)))))
 
 (defn set-at [the-map x y val]
   ;(assert (and (>= x 0) (>= y 0) (< x (count the-map)) (< y (count the-map))) "Tried to set value with X and Y that are outside the map")
   (assoc the-map (+ x (* y (map-size the-map))) val))
-
-
 
 (defn new-vec
   ([length] (new-vec length (constantly 0)))

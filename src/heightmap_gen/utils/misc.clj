@@ -1,7 +1,9 @@
 (ns heightmap-gen.utils.misc)
 
 (defn pipe [val funcs]
-  ((apply comp funcs) val))
+  (cond
+    (= (count funcs) 0) val
+    :else               (recur ((first funcs) val) (rest funcs))))
 
 (assert (=
          (pipe 0 (map (fn [num] (fn [other-num] (+ num other-num))) [1 3 2 7]))
