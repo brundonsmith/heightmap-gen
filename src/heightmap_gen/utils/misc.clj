@@ -5,10 +5,6 @@
     (= (count funcs) 0) val
     :else               (recur ((first funcs) val) (rest funcs))))
 
-(assert (=
-         (pipe 0 (map (fn [num] (fn [other-num] (+ num other-num))) [1 3 2 7]))
-         13))
-
 (defn occurances [vec val]
   (reduce (fn [c element]
             (cond
@@ -24,7 +20,3 @@
   (for [a group1
         b group2]
     [a b]))
-
-(assert (=
-         (pairs [0 1] [2 3])
-         [[0 2] [0 3] [1 2] [1 3]]))

@@ -33,21 +33,9 @@
   ([size] (new-map size (constantly 0)))
   ([size func] (new-vec (* size size) (fn [x] (func (mod x size) (math/round-down (/ x size)))))))
 
-
-
 (defn map-maps [func maps]
   (let [size (map-size (first maps))]
     (new-map size
              (fn [x y]
                (let [vals (map #(get-at % x y) maps)]
                  (apply func vals))))))
-
-
-(let [the-map (new-map 5)]
-  (assert (= 5 (map-size the-map))))
-
-(let [the-map (new-map 17)]
-  (assert (= 17 (map-size the-map))))
-
-(let [the-map (new-map 33)]
-  (assert (= 33 (map-size the-map))))

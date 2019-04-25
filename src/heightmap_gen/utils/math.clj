@@ -3,22 +3,6 @@
 (defn average [& nums]
   (/ (reduce + nums) (count nums)))
 
-(assert (=
-         (average 1)
-         1))
-
-(assert (=
-         (average 0)
-         0))
-
-(assert (=
-         (average 1 3)
-         2))
-
-(assert (=
-         (average 1 4 7)
-         4))
-
 (defn binary-root [n base]
   (Math/pow Math/E (/ (Math/log n) base)))
 
@@ -38,18 +22,6 @@
     (<= n min) min
     (>= n max) max
     :else n))
-
-(assert (=
-         (clamp -1 0 1)
-         0))
-
-(assert (=
-         (clamp 2 0 1)
-         1))
-
-(assert (=
-         (clamp 0.1 0 1)
-         0.1))
 
 (defn is-integer [flt]
   (=
