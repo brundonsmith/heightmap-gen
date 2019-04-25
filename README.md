@@ -1,14 +1,26 @@
 # heightmap-gen
 
-A Clojure library designed to ... well, that part is up to you.
+A simple Clojure library for doing basic heightmap generation for games or 
+other graphical programs.
+
+Heightmaps are generated as a grayscale image of NxN pixels where N = 2^x + 1 
+for some x. Can be run directly to generate PNG files, or can be called 
+as a library to generate the image as a 1D vector of floating-point numbers.
+
+Functionality included at time of writing:
+- Diamond-square algorithm
+- White noise function
+- Various basic filters
+
+![Example heightmap](https://raw.githubusercontent.com/brundonsmith/heightmap-gen/master/test.png)
 
 ## Usage
 
-FIXME
+TODO
 
 ## License
 
-Copyright © 2019 FIXME
+Copyright © 2019 Brandon Smith
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
