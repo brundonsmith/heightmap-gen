@@ -3,8 +3,11 @@
   (:require [heightmap-gen.utils.math :as math]))
 
 
+(def possible-sizes
+  (map #(int (+ (Math/pow 2 %) 1)) (range 1 20)))
+  
 (defn map-size [the-map]
-  (Math/round (math/binary-root (count the-map) 2)))
+  (first (filter #(= (count the-map) (* % %)) possible-sizes)))
 
 (defn wraparound [num size]
   (mod (+ num size) size))
@@ -39,6 +42,9 @@
                (let [vals (map #(get-at % x y) maps)]
                  (apply func vals))))))
 
+
+(let [the-map (new-map 5)]
+  (assert (= 5 (map-size the-map))))
 
 (let [the-map (new-map 17)]
   (assert (= 17 (map-size the-map))))
