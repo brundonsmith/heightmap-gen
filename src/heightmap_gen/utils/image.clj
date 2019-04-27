@@ -5,7 +5,7 @@
 
 (import 'java.awt.image.BufferedImage 'javax.imageio.ImageIO 'java.awt.Color 'java.io.File)
 
-(defn write-image [the-map]
+(defn write-image [file the-map]
   (let [size (maps/map-size the-map)
         img (BufferedImage. size size BufferedImage/TYPE_BYTE_GRAY)
         gfx (.getGraphics img)]
@@ -19,4 +19,4 @@
                         (float (math/clamp val 0 1))))
         (.fillRect gfx x y 1 1)))
 
-    (ImageIO/write img "png" (File. "test.png"))))
+    (ImageIO/write img "png" (File. file))))

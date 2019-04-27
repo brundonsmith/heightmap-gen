@@ -1,5 +1,4 @@
 (ns heightmap-gen.utils.maps
-  (:require [clojure.tools.trace :as tr])
   (:require [heightmap-gen.utils.math :as math]))
 
 
@@ -39,3 +38,4 @@
              (fn [x y]
                (let [vals (map #(get-at % x y) maps)]
                  (apply func vals))))))
+

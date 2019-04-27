@@ -1,4 +1,2 @@
 {;; ...
- :aliases {:nREPL
-           {:extra-deps
-            {nrepl/nrepl {:mvn/version "0.6.0"}}}}}
+}

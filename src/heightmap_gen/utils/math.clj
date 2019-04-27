@@ -36,3 +36,6 @@
 
 (defn round-down [n]
   (Math/round (Math/floor n)))
+
+(defn log2 [n]
+  (/ (Math/log n) (Math/log 2)))
